@@ -6,10 +6,11 @@ module dff (
     output reg q
 );
 
-    always @(posedge clk) begin
-        if (en) begin
+    always @(posedge clk or negedge rst) begin
+        if (!rst)
+            q <= 0;
+        else if (en)
             q <= d;
-        end
     end
     always @(negedge rst) begin
         q <= 0;
@@ -19,7 +20,7 @@ endmodule
 
 module dff_tb;
     reg en = 0;
-    reg rst = 0;
+    reg rst = 1;
     reg clk = 0;
     reg d = 0;
     wire q;
@@ -37,8 +38,8 @@ module dff_tb;
             #2 en <= 0;
             #2 d <= 0;
             #2 d <= 1;
-            #2 rst <= 1;
             #2 rst <= 0;
+            #2 rst <= 1;
             #2 en <= 1;
             #2 d <= 0;
             #2 d <= 1;

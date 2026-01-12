@@ -9,8 +9,8 @@ demux: demux.v
 counter: counter.v
 	iverilog -o counter counter.v
 
-adder: adder.v adder_tb.v
-	iverilog -o adder -c adder.txt
+adder: adder.v
+	iverilog -o adder adder.v
 
 mult: mult.v mult_tb.v
 	iverilog -o mult mult.v mult_tb.v
