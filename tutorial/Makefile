@@ -10,7 +10,7 @@ counter: counter.v
 	iverilog -o counter counter.v
 
 adder: adder.v
-	iverilog -o adder adder.v
+	iverilog -g2005 -o adder adder.v
 
 mult: mult.v mult_tb.v
 	iverilog -o mult mult.v mult_tb.v
