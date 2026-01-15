@@ -1,7 +1,9 @@
-module and_gate ( input wire a, input wire b, output reg c);
-    always @(*) begin
-        c = a & b;
-    end
+module and_gate (
+    input wire a, 
+    input wire b, 
+    output wire c
+);
+    assign c = a & b;
 endmodule
 
 module test;
