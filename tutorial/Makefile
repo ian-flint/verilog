@@ -1,4 +1,22 @@
-default: adder mult tb and counter dff and_or mux demux srff jkff msdff tff actr sctr bsctr gctr
+default: adder mult tb and counter dff and_or mux demux srff jkff msdff tff actr sctr bsctr gctr rctr jctr sipo moore moore2 gctr2
+
+moore2: moore2.v moore2_tb.v
+	iverilog -o moore2 moore2.v moore2_tb.v
+
+moore: moore.v sipo.v moore_tb.v jkff.v
+	iverilog -o moore moore.v sipo.v jkff.v moore_tb.v
+
+sipo: sipo.v sipo_tb.v jkff.v
+	iverilog -o sipo sipo.v jkff.v sipo_tb.v
+
+jctr: jctr.v jctr_tb.v jkff.v
+	iverilog -o jctr jctr.v jkff.v jctr_tb.v
+
+rctr: rctr.v rctr_tb.v jkff.v
+	iverilog -o rctr rctr.v jkff.v rctr_tb.v
+
+gctr2: gctr2.v gctr2_tb.v dff.v
+	iverilog -o gctr2 gctr2.v gctr2_tb.v
 
 gctr: gctr.v gctr_tb.v jkff.v
 	iverilog -o gctr gctr.v jkff.v gctr_tb.v
@@ -21,8 +39,8 @@ msdff: msdff.v
 jkff: jkff.v jkff_tb.v
 	iverilog -o jkff jkff.v jkff_tb.v
 
-srff: srff.v
-	iverilog -o srff srff.v
+srff: srff.v srff_tb.v
+	iverilog -o srff srff.v srff_tb.v
 
 mux: mux.v
 	iverilog -o mux mux.v
