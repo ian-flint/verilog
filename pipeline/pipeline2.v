@@ -5,17 +5,19 @@ module pipeline (
     output reg[7:0] out
 );
 
-reg [7:0] pipe[4:0];
-reg [7:0] inpipe[4:0];
+parameter length = 8;
+
+reg [7:0] pipe[length:0];
+reg [7:0] inpipe[length:0];
 
 always @(*) pipe[0] <= in;
 always @(*) inpipe[0] <= in;
-always @(*) out <= pipe[4];
-always @(*) outin <= inpipe[4];
+always @(*) out <= pipe[length];
+always @(*) outin <= inpipe[length];
 
 genvar ix;
 generate
-    for (ix = 0; ix < 4; ix = ix + 1) begin
+    for (ix = 0; ix < length; ix = ix + 1) begin
         always @(posedge clk) begin
             pipe[ix + 1] <= pipe[ix] + 1;
             inpipe[ix + 1] <= inpipe[ix];
