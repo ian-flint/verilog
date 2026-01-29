@@ -14,9 +14,12 @@ parameter bitmap = 32'h04c11db7; // forward bitmap
 //parameter bitmap = 32'hedb88320; // reverse bitmap
 
 wire[7:0] rdata;
-assign rdata = {
-    data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]
-};
+genvar ix;
+generate
+    for (ix = 0; ix < 8; ix++) begin
+        assign rdata[ix] = data[7 - ix];
+    end
+endgenerate
 
 always @(posedge inputReady) begin
     //$display ("byteCounter = %d", byteCounter);
@@ -26,7 +29,6 @@ always @(posedge inputReady) begin
     end
     if (byteCounter == 5) begin
         bitCounter = 0;
-        //outputReady = bitCounter[3];
     end
     scratch = scratch | rdata[7:0];
     if (byteCounter < 5) begin
@@ -50,7 +52,6 @@ always @(negedge clk) begin
         //$display ("shifting left");
         bitCounter = bitCounter + 1;
     end
-    //outputReady = bitCounter[3];
 end
 
 endmodule

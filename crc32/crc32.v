@@ -21,7 +21,6 @@ always @(posedge inputReady) begin
     end
     if (byteCounter == 5) begin
         bitCounter = 0;
-        //outputReady = bitCounter[3];
     end
     scratch[39:32] = scratch[39:32] | data;
     if (byteCounter < 5) begin
@@ -45,7 +44,6 @@ always @(negedge clk) begin
         //$display ("shifting left");
         bitCounter = bitCounter + 1;
     end
-    //outputReady = bitCounter[3];
 end
 
 endmodule
