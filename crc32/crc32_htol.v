@@ -11,23 +11,28 @@ reg [7:0] bitCounter = 8;
 assign outputReady = bitCounter[3];
 
 //parameter bitmap = 33'b10000010_01100000_10001110_110110111;
-//parameter bitmap = 33'h104c11db7;
+parameter bitmap = 33'h104c11db7;
 //parameter bitmap = 32'h04c11db7;
-parameter bitmap = 32'hedb88320;
+//parameter bitmap = 32'hedb88320;
+
+wire[7:0] rdata;
+assign rdata = {
+    data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]
+};
 
 always @(posedge inputReady) begin
     //$display ("byteCounter = %d", byteCounter);
     if (byteCounter < 5) begin
-        scratch = scratch >> 8;
+        scratch = scratch << 8;
         byteCounter = byteCounter + 1;
     end
     if (byteCounter == 5) begin
         bitCounter = 0;
         //outputReady = bitCounter[3];
     end
-    scratch[39:32] = scratch[39:32] | data;
+    scratch = scratch | rdata[7:0];
     if (byteCounter < 5) begin
-        scratch[39:32] = scratch[39:32] ^ 8'hFF;
+        scratch[7:0] = scratch[7:0] ^ 8'hFF;
     end
     //$display ("bitCounter = %d", bitCounter);
 end
@@ -35,16 +40,14 @@ end
 
 always @(negedge clk) begin
     if (outputReady == 0) begin
-        if (scratch[0] == 1) begin
-            scratch = scratch >> 1;
+        if (scratch[39] == 1) begin
             //$display ("before: %b", scratch);
             //$display ("bitmap: %b", bitmap);
-            scratch = scratch ^ bitmap;
+            scratch[39:7] = scratch[39:7] ^ bitmap;
             //$display ("after:  %b", scratch);
-        end else begin
-            scratch = scratch >> 1;
         end
         //$display ("shifting left");
+        scratch = scratch << 1;
         bitCounter = bitCounter + 1;
     end
     //outputReady = bitCounter[3];

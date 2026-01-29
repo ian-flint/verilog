@@ -15,7 +15,7 @@ string filename;
 genvar ix;
 generate
     for (ix = 0; ix < 32; ix++) begin
-        assign crc32[ix] = scratch[ix];
+        assign crc32[ix] = scratch[39 - ix];
     end
 endgenerate
 
