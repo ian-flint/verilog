@@ -10,11 +10,8 @@ always #1 clk = !clk;
 reg[2:0] divider = 0;
 reg inputReady = 0;
 reg[3:0] finishing = 0;
-//parameter bitmap = 33'b10000010_01100000_10001110_110110111;
-parameter bitmap = 33'h104c11db7;
-//parameter bitmap = 32'h04c11db7;
-//parameter bitmap = 32'hedb88320;
 wire[31:0] crc32;
+string filename;
 genvar ix;
 generate
     for (ix = 0; ix < 32; ix++) begin
@@ -23,34 +20,39 @@ generate
 endgenerate
 
     initial begin
-        fd = $fopen("data.txt", "r");
+        if (!($value$plusargs("FILE=%s", filename))) begin
+            filename = "data.txt";
+        end
+        $display ("Opening %s", filename);
+        fd = $fopen(filename, "r");
         if (fd == 0) begin
             $display ("Error opening file");
             $finish;
         end
-        $monitor ("Clock: %d, ir: %b, input: %h, or: %b, f: %b, scratch: %b (%h)", clk, inputReady, data, inputReady, finishing, scratch, scratch);
+        //$monitor ("Clock: %d, ir: %b, input: %h, or: %b, scratch: %b (%h)", clk, inputReady, data, outputReady, scratch, scratch);
+        //$monitor ("input: %h, scratch: %b (%h)", data, scratch, scratch);
     end;
     
     always @(posedge clk) begin
-        if (finishing == 0) begin
+        if ((finishing == 0) && (outputReady == 1)) begin
             status = $fscanf(fd, "%c", data);
             if (status == 1) begin
-                $display ("Got %c (%h - %b)", data, data, data);
+                //$display ("Got %c (%h - %b)", data, data, data);
                 inputReady = 1;
             end else begin
-                $display ("Got status %d", status);
+//                $display ("Got status %d", status);
                 if ($feof(fd)) begin
                     finishing = 1;
                 end
             end
         end else if (outputReady == 1) begin
-            $display ("Output is ready");
             if (finishing == 5) begin
-                $display ("crc = %b (%h)", crc32 ^ 32'hffffffff, crc32 ^ 32'hffffffff);
+                $display ("crc = %h", crc32 ^ 32'hffffffff);
                 $fclose(fd);
                 $finish;
             end
             // add four zero bytes
+            //$display ("Feeding zero character");
             data = 0;
             finishing = finishing + 1;
             inputReady = 1;
