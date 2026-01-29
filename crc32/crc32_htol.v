@@ -10,10 +10,8 @@ byte byteCounter = 0;
 reg [7:0] bitCounter = 8;
 assign outputReady = bitCounter[3];
 
-//parameter bitmap = 33'b10000010_01100000_10001110_110110111;
-parameter bitmap = 33'h104c11db7;
-//parameter bitmap = 32'h04c11db7;
-//parameter bitmap = 32'hedb88320;
+parameter bitmap = 32'h04c11db7; // forward bitmap
+//parameter bitmap = 32'hedb88320; // reverse bitmap
 
 wire[7:0] rdata;
 assign rdata = {
@@ -43,11 +41,13 @@ always @(negedge clk) begin
         if (scratch[39] == 1) begin
             //$display ("before: %b", scratch);
             //$display ("bitmap: %b", bitmap);
-            scratch[39:7] = scratch[39:7] ^ bitmap;
+            scratch = scratch << 1;
+            scratch[39:8] = scratch[39:8] ^ bitmap;
             //$display ("after:  %b", scratch);
+        end else begin
+            scratch = scratch << 1;
         end
         //$display ("shifting left");
-        scratch = scratch << 1;
         bitCounter = bitCounter + 1;
     end
     //outputReady = bitCounter[3];

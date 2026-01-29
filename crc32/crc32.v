@@ -10,10 +10,8 @@ byte byteCounter = 0;
 reg [7:0] bitCounter = 8;
 assign outputReady = bitCounter[3];
 
-//parameter bitmap = 33'b10000010_01100000_10001110_110110111;
-//parameter bitmap = 33'h104c11db7;
-//parameter bitmap = 32'h04c11db7;
-parameter bitmap = 32'hedb88320;
+//parameter bitmap = 32'h04c11db7; // forward bitmap
+parameter bitmap = 32'hedb88320; // reverse bitmap
 
 always @(posedge inputReady) begin
     //$display ("byteCounter = %d", byteCounter);
